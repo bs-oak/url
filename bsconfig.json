@@ -1,6 +1,6 @@
 {
-  "name": "bs-oak-url",
-  "version": "0.1.1",
+  "name": "@bs-oak/url",
+  "version": "0.1.2",
   "sources": [
     {
       "dir": "src",
