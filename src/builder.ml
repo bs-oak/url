@@ -1,3 +1,12 @@
+(* helpers *)
+
+let rec join delim = function
+  | x :: [] -> x
+  | x :: xs -> x ^ delim ^ (join delim xs)
+  | [] -> ""
+
+(* builder *)
+
 type query_parameter = string * string
 
 type root = 
@@ -16,20 +25,20 @@ let to_query_pair (key, value) =
 let to_query parameters =
   match parameters with
   | [] -> ""
-  | _ -> "?" ^ Ext.String.join "&" (List.map to_query_pair parameters)
+  | _ -> "?" ^ join "&" (List.map to_query_pair parameters)
 
 let absolute path_segments parameters =
-  "/" ^ (Ext.String.join "/" path_segments) ^ to_query parameters
+  "/" ^ (join "/" path_segments) ^ to_query parameters
 
 let relative path_segments parameters =
-  (Ext.String.join "/" path_segments) ^ to_query parameters
+  (join "/" path_segments) ^ to_query parameters
 
 let cross_origin pre_path path_segments parameters =
-  pre_path ^ "/" ^ (Ext.String.join "/" path_segments) ^ to_query parameters
+  pre_path ^ "/" ^ (join "/" path_segments) ^ to_query parameters
 
 let custom root path_segments parameters optional_fragment =
   let fragmentless =
-    (root_to_pre_path root) ^ (Ext.String.join "/" path_segments) ^ (to_query parameters)
+    (root_to_pre_path root) ^ (join "/" path_segments) ^ (to_query parameters)
   in
   match optional_fragment with
   | None -> fragmentless

@@ -38,8 +38,14 @@ let () = describe "Query" (fun () ->
     test "returns optional int when key exists" (fun () -> 
       let parser = 
         Parser_query.string "int_key"
-        |> Parser_query.map (Ext.Option.with_default "0")
-        |> Parser_query.map Ext.String.to_int
+        |> Parser_query.map (fun x -> Belt.Option.getWithDefault x "0")
+        |> Parser_query.map  
+          (fun x -> 
+            try
+              Some (int_of_string x)
+            with
+            | _ -> None
+          ) 
       in
       expect (Parser_query.parse parser dict) |> toEqual( Some 55 )
     );

@@ -5,7 +5,7 @@ let parse parser dict =
 
 let custom key fn dict =
     Dict.get key dict
-    |> Ext.Option.with_default []
+    |. Belt.Option.getWithDefault []
     |> fn
     
 let string key =
@@ -17,7 +17,11 @@ let string key =
 
 let int key =
   let fn = function
-    | [str] -> Ext.String.to_int str
+    | [str] -> 
+      (try
+        Some (int_of_string str)
+      with
+      | Failure _ -> None)
     | _ -> None
   in
   custom key fn

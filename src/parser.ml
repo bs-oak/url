@@ -1,3 +1,13 @@
+(* helpers *)
+
+let string_to_int_safe str =
+  try 
+    Some (int_of_string str)
+  with 
+    | _ -> None
+
+(* query *)
+
 module Query = Parser_query
 
 type 'a state  =
@@ -39,7 +49,7 @@ let int state =
   match state.unvisited with
   | [] -> []
   | next :: rest ->
-    (match Ext.String.to_int next with
+    (match string_to_int_safe next with
     | Some next_value -> 
       [{ visited = next :: state.visited
       ; unvisited = rest
@@ -153,7 +163,7 @@ let parse parser (url : Url.url) =
 
 let parse_hash parser (url : Url.url) =
   { visited = [] 
-  ; unvisited = prepare_path (Ext.Option.with_default "" url.fragment)
+  ; unvisited = prepare_path (Belt.Option.getWithDefault url.fragment "")
   ; params = prepare_query url.query
   ; frag = None
   ; value = fun x -> x
